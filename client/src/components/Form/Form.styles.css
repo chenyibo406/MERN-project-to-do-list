@@ -1,0 +1,4 @@
+.input {
+  outline: 0px solid transparent;
+  /* set the outline of input area disapear when edit the content */
+}
