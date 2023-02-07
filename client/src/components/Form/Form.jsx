@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Form.styles.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import Task from "../Task/Task";
 import Panel from "../Panel/Panel";
 import { useSelector, useDispatch } from "react-redux";
-import { createPost } from "../../actions/posts";
+import { createPost, updatePost } from "../../actions/posts";
 
-// TODO: GET THE CURRENT ID and Update the title awa taskcontent, date, delete in Task component
+// TODO: GET THE CURRENT ID and Update the title, "taskcontent", "date", "delete" in Task component
 
 const Form = ({ currentId, setCurrentId }) => {
   // TODO: Make the add task work! ✔
@@ -19,50 +19,95 @@ const Form = ({ currentId, setCurrentId }) => {
     complete: false,
     user: "",
   });
-
   const [input, setInput] = useState("");
   const [title, setTitle] = useState("To do list");
-  const [taskContent, setTaskContent] = useState([]);
-  const [editTask, setEditTask] = useState(false);
+  const [taskContent, setTaskContent] = useState("");
+  const [uniTaskComplete, setUniTaskComplete] = useState(false);
+  const [editTitleOn, setEditTitleOn] = useState(false);
+  const [showTitle, setShowTitle] = useState("To do list");
 
   const dispatch = useDispatch();
 
   const posts = useSelector((state) => state.posts);
+
+  const postUpdate = useSelector((state) =>
+    currentId ? state.posts.find((p) => p._id === currentId) : null
+  );
+
+  useEffect(() => {
+    if (postUpdate) {
+      setInput(postUpdate["task"]);
+    }
+  }, [postUpdate]);
+
+  useEffect(() => {
+    if (uniTaskComplete) {
+      // console.log("Hello");
+      dispatch(
+        updatePost(currentId, {
+          title: title,
+          task: taskContent,
+          complete: false,
+          user: "",
+        })
+      );
+      setInput("");
+    }
+  }, [uniTaskComplete]);
+
+  // TODO: bug, if first input title and it would cause fault
+  useEffect(() => {
+    if (editTitleOn) {
+      setShowTitle(postUpdate["title"]);
+    }
+  }, [editTitleOn]);
 
   const taskHandleChange = (e) => {
     setInput(e.target.value);
     setTodoList({ ...todoList, task: e.target.value });
   };
 
+  const clear = () => {
+    setCurrentId(null);
+    setTodoList({ title: "To do list", task: "", complete: false, user: "" });
+  };
+
   const handleSubmit = (e) => {
-    setTaskContent((prev) => [...prev, { task: input }]);
+    if (input.length === 0 || title.length === 0) {
+      console.log("please input task");
+    } else if (currentId) {
+      // TODO ✔: update the content as the input content show in the element
 
-    // setTodoList({ title: title, task: input, complete: false });
-
-    dispatch(createPost(todoList));
-
-    setInput("");
+      dispatch(updatePost(currentId, todoList));
+      setEditTitleOn(false);
+      setInput("");
+      clear();
+    } else {
+      // TODO: that would set a conflict if the updatePost function fail.
+      dispatch(createPost(todoList));
+      clear();
+    }
   };
 
-  const handleDelete = (index) => {
-    var newList = todoList;
-    newList.splice(index, 1);
-    setTodoList([...newList]);
-  };
-
-  const handleEdit = (index) => {
-    setEditTask(true);
-  };
+  // const handleDelete = (index) => {
+  //   var newList = todoList;
+  //   newList.splice(index, 1);
+  //   setTodoList([...newList]);
+  // };
 
   const titleChangeHandler = (e) => {
-    e.preventDefault();
+    // TODO: Bug
+    // e.preventDefault();
     setTitle(e.currentTarget.textContent);
-    setTodoList({ ...todoList, title: e.currentTarget.textContent });
+    setTodoList({ ...todoList, title: title, task: input });
   };
 
-  // console.log(title);
-  // console.log(input);
-  console.log(todoList);
+  // console.log(`title: ${title}`);
+  // console.log(`taskontent: ${taskContent}`);
+  // console.log(`title: ${title}`);
+  // console.log(`input: ${input}`);
+  // console.log(`currentId: ${currentId}`);
+  // console.log(todoList);
 
   return (
     <section className="vh-100">
@@ -76,17 +121,25 @@ const Form = ({ currentId, setCurrentId }) => {
             >
               <div className="card-body py-4 px-4 px-md-5">
                 <p className="h1 text-center mt-3 mb-4 pb-3 text-primary d-flex justify-content-center">
-                  <i className=" bi bi-check"></i>
-
-                  <span
-                    className="input"
-                    role="textbox"
-                    contentEditable
-                    suppressContentEditableWarning={true}
-                    onInput={titleChangeHandler}
-                  >
-                    To Do list
-                  </span>
+                  <i>
+                    {/* Could I just don't use editTitleOn? */}
+                    {editTitleOn ? (
+                      // TODO: Bug
+                      <span
+                        className="input"
+                        role="textbox"
+                        contentEditable
+                        suppressContentEditableWarning={true}
+                        onInput={titleChangeHandler}
+                        value="To do list"
+                        style={{ display: "inline-block", minWidth: "20px" }}
+                      >
+                        {showTitle}
+                      </span>
+                    ) : (
+                      <i className=" bi bi-check">To Do List</i>
+                    )}
+                  </i>
                 </p>
 
                 <div className="pb-2">
@@ -100,7 +153,6 @@ const Form = ({ currentId, setCurrentId }) => {
                           onChange={taskHandleChange}
                           name="task"
                           // value={inputValue}
-
                           value={input}
                         />
                         <a
@@ -129,16 +181,19 @@ const Form = ({ currentId, setCurrentId }) => {
 
                 <hr className="my-4" />
                 <Panel />
-                {taskContent.map((content, index) => {
-                  // console.log(content);
+                {posts.map((content) => {
                   return (
                     <Task
-                      key={index}
-                      title={title}
+                      key={content["_id"]}
+                      title={content["title"]}
                       taskContent={content["task"]}
-                      deleteTask={handleDelete}
-                      editTask={handleEdit}
                       setCurrentId={setCurrentId}
+                      contentId={content._id}
+                      setTitle={setTitle}
+                      setTaskContent={setTaskContent}
+                      setUniTaskComplete={setUniTaskComplete}
+                      setEditTitleOn={setEditTitleOn}
+                      setInput={setInput}
                     />
                   );
                 })}
