@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./Form.styles.css";
+// import "./Form.styles.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import Task from "../Task/Task";
+import Task from "../../components/Task/Task";
 import Panel from "../Panel/Panel";
+
 import { useSelector, useDispatch } from "react-redux";
 import { createPost, updatePost } from "../../actions/posts";
 
-// TODO: GET THE CURRENT ID and Update the title, "taskcontent", "date", "delete" in Task component
+// TODO ✔ : Add user login and authentication
+// TODO: ✖ : "date" in Task component
+// TODO: fix the bug
 
 const Form = ({ currentId, setCurrentId }) => {
-  // TODO: Make the add task work! ✔
   // TODO: Make the calendar work!
 
   const [todoList, setTodoList] = useState({
@@ -23,11 +25,10 @@ const Form = ({ currentId, setCurrentId }) => {
   const [title, setTitle] = useState("To do list");
   const [taskContent, setTaskContent] = useState("");
   const [uniTaskComplete, setUniTaskComplete] = useState(false);
-  const [editTitleOn, setEditTitleOn] = useState(false);
+
   const [showTitle, setShowTitle] = useState("To do list");
 
   const dispatch = useDispatch();
-
   const posts = useSelector((state) => state.posts);
 
   const postUpdate = useSelector((state) =>
@@ -42,7 +43,6 @@ const Form = ({ currentId, setCurrentId }) => {
 
   useEffect(() => {
     if (uniTaskComplete) {
-      // console.log("Hello");
       dispatch(
         updatePost(currentId, {
           title: title,
@@ -55,21 +55,21 @@ const Form = ({ currentId, setCurrentId }) => {
     }
   }, [uniTaskComplete]);
 
-  // TODO: bug, if first input title and it would cause fault
-  useEffect(() => {
-    if (editTitleOn) {
-      setShowTitle(postUpdate["title"]);
-    }
-  }, [editTitleOn]);
+  const clear = () => {
+    setCurrentId(null);
+    setTitle("To Do List");
+    setShowTitle("To Do List");
+    setTodoList({ title: "To Do List", task: "", complete: false, user: "" });
+  };
 
   const taskHandleChange = (e) => {
     setInput(e.target.value);
     setTodoList({ ...todoList, task: e.target.value });
   };
 
-  const clear = () => {
-    setCurrentId(null);
-    setTodoList({ title: "To do list", task: "", complete: false, user: "" });
+  const titleChangeHandler = (e) => {
+    setTitle(e.target.textContent);
+    setTodoList({ ...todoList, title: title, task: input });
   };
 
   const handleSubmit = (e) => {
@@ -79,35 +79,15 @@ const Form = ({ currentId, setCurrentId }) => {
       // TODO ✔: update the content as the input content show in the element
 
       dispatch(updatePost(currentId, todoList));
-      setEditTitleOn(false);
-      setInput("");
+
       clear();
     } else {
       // TODO: that would set a conflict if the updatePost function fail.
+      console.log(todoList);
       dispatch(createPost(todoList));
       clear();
     }
   };
-
-  // const handleDelete = (index) => {
-  //   var newList = todoList;
-  //   newList.splice(index, 1);
-  //   setTodoList([...newList]);
-  // };
-
-  const titleChangeHandler = (e) => {
-    // TODO: Bug
-    // e.preventDefault();
-    setTitle(e.currentTarget.textContent);
-    setTodoList({ ...todoList, title: title, task: input });
-  };
-
-  // console.log(`title: ${title}`);
-  // console.log(`taskontent: ${taskContent}`);
-  // console.log(`title: ${title}`);
-  // console.log(`input: ${input}`);
-  // console.log(`currentId: ${currentId}`);
-  // console.log(todoList);
 
   return (
     <section className="vh-100">
@@ -116,29 +96,25 @@ const Form = ({ currentId, setCurrentId }) => {
           <div className="col">
             <div
               className="card"
-              id="list1"
               style={{ borderRadius: ".75rem", backgroundColor: " #eff1f2" }}
             >
               <div className="card-body py-4 px-4 px-md-5">
                 <p className="h1 text-center mt-3 mb-4 pb-3 text-primary d-flex justify-content-center">
-                  <i>
-                    {/* Could I just don't use editTitleOn? */}
-                    {editTitleOn ? (
-                      // TODO: Bug
-                      <span
-                        className="input"
-                        role="textbox"
-                        contentEditable
-                        suppressContentEditableWarning={true}
-                        onInput={titleChangeHandler}
-                        value="To do list"
-                        style={{ display: "inline-block", minWidth: "20px" }}
-                      >
-                        {showTitle}
-                      </span>
-                    ) : (
-                      <i className=" bi bi-check">To Do List</i>
-                    )}
+                  <i className="bi bi-check2-all">
+                    <span
+                      role="textbox"
+                      contentEditable
+                      suppressContentEditableWarning={true}
+                      onInput={titleChangeHandler}
+                      value="To do list"
+                      style={{
+                        display: "inline-block",
+
+                        outline: "0px solid transparent",
+                      }}
+                    >
+                      {showTitle}
+                    </span>
                   </i>
                 </p>
 
@@ -152,22 +128,12 @@ const Form = ({ currentId, setCurrentId }) => {
                           placeholder="Add new tasks..."
                           onChange={taskHandleChange}
                           name="task"
-                          // value={inputValue}
                           value={input}
                         />
-                        <a
-                          href="#!"
-                          data-mdb-toggle="tooltip"
-                          title="Set due date"
-                        >
-                          <i
-                            className="bi bi-calendar-day ms-3 me-3 "
-                            style={{ fontSize: "2rem" }}
-                          ></i>
-                        </a>
+
                         <div>
                           <button
-                            className="btn btn-primary"
+                            className="btn btn-primary ms-3 me-3"
                             type="button"
                             onClick={handleSubmit}
                           >
@@ -192,8 +158,8 @@ const Form = ({ currentId, setCurrentId }) => {
                       setTitle={setTitle}
                       setTaskContent={setTaskContent}
                       setUniTaskComplete={setUniTaskComplete}
-                      setEditTitleOn={setEditTitleOn}
                       setInput={setInput}
+                      setShowTitle={setShowTitle}
                     />
                   );
                 })}

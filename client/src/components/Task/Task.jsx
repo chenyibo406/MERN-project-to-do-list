@@ -12,31 +12,16 @@ const Task = ({
   setCurrentId,
   contentId,
   setUniTaskComplete,
-  setEditTitleOn,
+  // setEditTitleOn,
+  setShowTitle,
   setInput,
 }) => {
-  // TODO: As the user check the task finished。
-  // TODO: Make the edit icon work.
-  // TODO: Make the delete icon work. ✔
-  // TODO: Make the alert warning icon replace the info icon also with alarm color as the deadline hit
-  //  Hint: <i class="bi bi-hourglass-split"></i> for house glass
-  // TODO: Double click the task and change the content.
+  // TODO: Make the alert warning  replace the info icon also with alarm color as the duedate
+  //  Hint: <i class="bi bi-hourglass-split"></i>
+  // TODO: fix bug
   const dispatch = useDispatch();
 
   const [unieditMode, setUniEditMode] = useState(false);
-
-  const handleEditTask = () => {
-    setEditTitleOn(true);
-    setTitle(title);
-    setInput(taskContent);
-    setCurrentId(contentId);
-  };
-
-  const handleUniEditTask = () => {
-    setUniTaskComplete(true);
-    setUniEditMode(false);
-    setCurrentId(contentId);
-  };
 
   const titleChangeHandler = (e) => {
     e.preventDefault();
@@ -49,7 +34,18 @@ const Task = ({
     setTaskContent(e.currentTarget.textContent);
     setUniEditMode(true);
   };
-  console.log(contentId);
+
+  const handleUniEditTask = () => {
+    setUniTaskComplete(true);
+    setUniEditMode(false);
+    setCurrentId(contentId);
+  };
+
+  const handleEditTask = () => {
+    setInput(taskContent);
+    setShowTitle(title);
+    setCurrentId(contentId);
+  };
 
   return (
     <div>
@@ -62,14 +58,12 @@ const Task = ({
               style={{ fontSize: "1.5rem" }}
               type="checkbox"
               value=""
-              id="flexCheckChecked1"
-              aria-label="..."
               onClick={() => dispatch(completePost(contentId))}
             />
           </div>
         </li>
-        {/* Task content */}
 
+        {/* Task content */}
         <div className="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent">
           <span
             className="input"
@@ -78,11 +72,10 @@ const Task = ({
             suppressContentEditableWarning={true}
             onInput={titleChangeHandler}
             style={{ display: "inline-block", minWidth: "20px" }}
-            // onClick={handleEditTask}
           >
             {title}
           </span>
-          -
+          &nbsp;-&nbsp;
           <span
             className="input"
             role="textbox"
@@ -90,7 +83,6 @@ const Task = ({
             suppressContentEditableWarning={true}
             onInput={taskChangeHandler}
             style={{ display: "inline-block", minWidth: "20px" }}
-            // onClick={handleEditTask}
           >
             {taskContent}
           </span>
