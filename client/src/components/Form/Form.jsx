@@ -109,7 +109,6 @@ const Form = ({ currentId, setCurrentId }) => {
                       value="To do list"
                       style={{
                         display: "inline-block",
-
                         outline: "0px solid transparent",
                       }}
                     >
