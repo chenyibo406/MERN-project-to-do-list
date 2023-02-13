@@ -13,24 +13,18 @@ const Panel = () => {
           <option value="1">All</option>
           <option value="2">Completed</option>
           <option value="3">Active</option>
-          <option value="4">Has due date</option>
+          {/* <option value="4">Has due date</option> */}
         </select>
-        <p className=" mb-0 ms-4 me-2 text-muted">Sort</p>
+        {/* <p className=" mb-0 ms-4 me-2 text-muted">Sort</p>
         <select className="select">
           <option value="1">Added date</option>
           <option value="2">Due date</option>
-        </select>
-        <a
-          href="#!"
-          style={{ color: "#23af89" }}
-          data-mdb-toggle="tooltip"
-          title="Ascending"
-        >
-          <i
-            className="bi bi-sort-down-alt ms-2"
-            style={{ fontSize: "1.5rem" }}
-          ></i>
-        </a>
+        </select> */}
+
+        <i
+          className="bi bi-sort-down-alt ms-2"
+          style={{ fontSize: "1.5rem" }}
+        ></i>
       </div>
     </div>
   );
