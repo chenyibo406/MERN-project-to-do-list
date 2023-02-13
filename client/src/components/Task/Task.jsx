@@ -12,13 +12,9 @@ const Task = ({
   setCurrentId,
   contentId,
   setUniTaskComplete,
-  // setEditTitleOn,
   setShowTitle,
   setInput,
 }) => {
-  // TODO: Make the alert warning  replace the info icon also with alarm color as the duedate
-  //  Hint: <i class="bi bi-hourglass-split"></i>
-  // TODO: fix bug
   const dispatch = useDispatch();
 
   const [unieditMode, setUniEditMode] = useState(false);
@@ -50,7 +46,6 @@ const Task = ({
   return (
     <div>
       <ul className="list-group list-group-horizontal rounded-0 bg-transparent">
-        {/* Checked✔  icon */}
         <li className="list-group-item d-flex align-items-center ps-0 pe-3 py-1 rounded-0 border-0 bg-transparent">
           <div className="form-check">
             <input
@@ -63,7 +58,6 @@ const Task = ({
           </div>
         </li>
 
-        {/* Task content */}
         <div className="list-group-item px-3 py-1 d-flex align-items-center flex-grow-1 border-0 bg-transparent">
           <span
             className="input"
@@ -97,7 +91,6 @@ const Task = ({
           )}
         </div>
 
-        {/* Editing 📝 Task */}
         <li className="list-group-item ps-3 pe-0 py-1 rounded-0 border-0 bg-transparent">
           <div className="d-flex flex-row justify-content-end mb-1">
             <i
@@ -106,7 +99,6 @@ const Task = ({
               onClick={handleEditTask}
             ></i>
 
-            {/* Delete Task  */}
             <i
               className="bi bi-trash-fill text-danger btn"
               style={{ fontSize: "1rem" }}
@@ -114,7 +106,6 @@ const Task = ({
             ></i>
           </div>
 
-          {/* Task date edit */}
           <div className="text-end text-muted">
             <p className="small mb-0 btn">
               <i className="bi bi-info-circle-fill me-2 text-muted"></i>28th Jun

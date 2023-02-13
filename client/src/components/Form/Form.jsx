@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-// import "./Form.styles.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import Task from "../../components/Task/Task";
 import Panel from "../Panel/Panel";
@@ -8,13 +7,7 @@ import Panel from "../Panel/Panel";
 import { useSelector, useDispatch } from "react-redux";
 import { createPost, updatePost } from "../../actions/posts";
 
-// TODO ✔ : Add user login and authentication
-// TODO: ✖ : "date" in Task component
-// TODO: fix the bug
-
 const Form = ({ currentId, setCurrentId }) => {
-  // TODO: Make the calendar work!
-
   const [todoList, setTodoList] = useState({
     title: "To do list",
     task: "",
@@ -76,13 +69,10 @@ const Form = ({ currentId, setCurrentId }) => {
     if (input.length === 0 || title.length === 0) {
       console.log("please input task");
     } else if (currentId) {
-      // TODO ✔: update the content as the input content show in the element
-
       dispatch(updatePost(currentId, todoList));
 
       clear();
     } else {
-      // TODO: that would set a conflict if the updatePost function fail.
       console.log(todoList);
       dispatch(createPost(todoList));
       clear();
@@ -109,7 +99,6 @@ const Form = ({ currentId, setCurrentId }) => {
                       value="To do list"
                       style={{
                         display: "inline-block",
-
                         outline: "0px solid transparent",
                       }}
                     >
