@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL = "http://localhost:5000";
+const URL = "https://app-qqafronlqq-df.a.run.app";
 
 const API = axios.create({ baseURL: URL });
 
